@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 
+# from CS needs to be modified for sushi
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username',
@@ -20,3 +21,19 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
+
+
+class OrderForm(FlaskForm):
+    # form where a customer can place an order
+    # if they do not have an account should have a way to redirect them
+    # to the creat account form
+    pass
+
+class EditMenuForm(FlaskForm):
+    # form where a staff member can add update or delete menu items
+    pass
+
+class EditStaffForm(FlaskForm):
+    # form where a manager on the staff can add or change or delete the
+    # the staff members that they manage
+    pass
