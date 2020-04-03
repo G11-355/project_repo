@@ -56,7 +56,7 @@ def place_order():
             
             return redirect(url_for('home'))
         else:
-            return render_template('order.html', form=form, current_user=current_user.username)
+            return render_template('order.html', form=form, current_user=f'{current_user.first_name} {current_user.last_name}')
     else:
         flash('Please sign in first!')
         return redirect(url_for('login'))
@@ -64,7 +64,7 @@ def place_order():
 @app.route("/orderList/<int:order_id>/update", methods=['GET', 'POST'])
 def update_order(order_id):
     order = Order.query.get_or_404(order_id)
-    form = OrderForm()
+    form = EditOrderForm()
     form.delete_item.choices = get_order_item(order_id=order_id)
     if form.validate_on_submit():
         remove_item_from_order(order.order_id, form.delete_item.data)
@@ -98,6 +98,7 @@ def assign_staff():
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
+        flash('You are already signed in!')
         return redirect(url_for('home'))
     form = RegistrationForm()
     if form.validate_on_submit():

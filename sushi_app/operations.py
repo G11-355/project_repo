@@ -38,14 +38,14 @@ def assign_staff_to_order(user_id, order_id):
 def get_order_items():
     # returns list of dictionaries order and the items in that order
     #order_items = db.session.query(Order, Item, OrderContents).join(Order).join(Item).join(OrderContents).filter(Order.order_id == OrderContents.order_id, Item.item_id == OrderContents.item_id).all()
-    order_items = list(db.session.execute('SELECT ot.order_id, it.item_id, oct.quantity FROM order_tb as ot JOIN order_contents_tb as oct on ot.order_id = oct.order_id JOIN item_tb as it ON it.item_id = oct.item_id'))
+    order_items = list(db.session.execute('SELECT ot.order_id, it.item_id, oct.quantity, ot.order_date FROM order_tb as ot JOIN order_contents_tb as oct on ot.order_id = oct.order_id JOIN item_tb as it ON it.item_id = oct.item_id'))
     unique_orders = {}
     for order in order_items:
         if order[0] in unique_orders:
-            unique_orders[order[0]].append([order[1], Item.query.filter_by(item_id=order[1]).first().name, order[-1]])
+            unique_orders[order[0]].append([order[1], Item.query.filter_by(item_id=order[1]).first().name, order[-2], order[-1]])
             # add the item name and the quantity ordered to list for that order id
         else:
-            unique_orders[order[0]] = [[order[1], Item.query.filter_by(item_id=order[1]).first().name, order[-1]]]
+            unique_orders[order[0]] = [[order[1], Item.query.filter_by(item_id=order[1]).first().name, order[-2], order[-1]]]
     # {order_id: [[item, quanity], [item: quant]]}
     return unique_orders
 

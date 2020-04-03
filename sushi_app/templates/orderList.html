@@ -7,6 +7,7 @@
                 <h2><a class="article-title" href="{{ url_for('update_order', order_id=order) }}">Order Number: {{ order }}</a></h2>
             </div>
             {% for item in order_items[order] %}
+            <p class="article-content">Placed on: {{item[-1]}}</p>
             <p class="article-content">Item ID: {{item[0]}} Item Name: {{item[1]}}. Quantity Ordered: {{item[2]}}</p>
             {% endfor %}
           </div>

@@ -3,7 +3,6 @@ from wtforms import StringField, PasswordField, SubmitField, BooleanField, Field
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from sushi_app.models import Item, User, Order
 from sushi_app import db
-from sushi_app.operations import get_order_item
 
 # from CS needs to be modified for sushi
 class RegistrationForm(FlaskForm):
@@ -54,9 +53,11 @@ class AssignStaffForm(FlaskForm):
     
     submit = SubmitField('Submit Assignment')
     
-        
 
 class OrderForm(FlaskForm):
-    
+    entry = TextAreaField(label='Enter Your Order Here', validators=[DataRequired()])
+    submit = SubmitField('Submit Order')
+
+class EditOrderForm(FlaskForm):
     delete_item = SelectField(label='Select Item to Delete', validators=[DataRequired()], coerce=int)
     submit = SubmitField('Delete')
