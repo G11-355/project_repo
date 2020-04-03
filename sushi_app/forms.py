@@ -1,7 +1,9 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, FieldList, FormField, IntegerField, TextAreaField, SelectField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
-from sushi_app.models import Item, User
+from sushi_app.models import Item, User, Order
+from sushi_app import db
+from sushi_app.operations import get_order_item
 
 # from CS needs to be modified for sushi
 class RegistrationForm(FlaskForm):
@@ -31,22 +33,30 @@ class AssignOrderForm():
     # to add a server
     pass
 
+class AssignStaffForm(FlaskForm):
+    # get join of all customers and orders
+    customer_orders = db.session.query(Order, User).join(Order, User.user_id == Order.customer_id).all()
+    users = User.query.all()
+    customers, staff = [], []
+    for co in customer_orders:
+        customers.append((co[0].order_id, f'{co[1].username} {co[0].order_date}'))
+    print(customers, '*******************************************')
+        # set up order choices based on customers who have made orders
+    for s in users:
+        if s.manager_id:
+            staff.append((s.user_id, f'{s.first_name} {s.last_name}'))
+
+    
+    order_dropdown = SelectField(label='Select Orders', 
+                                  choices=customers, validators=[DataRequired()], coerce=int)
+    staff_dropdown = SelectField(label='Select Staff', 
+                                 choices=staff, validators=[DataRequired()], coerce=int)
+    
+    submit = SubmitField('Submit Assignment')
+    
+        
 
 class OrderForm(FlaskForm):
-    choices = [(user.username, user.username)for user in User.query.all()]
-    username = SelectField(label='Username: ', choices=choices)
-    entry = TextAreaField(label='Enter Your Order Here', validators=[DataRequired()])
-    submit = SubmitField('Submit Order')
-
-class CustomForm(FlaskForm):
-    pass
-
-
-class EditMenuForm(FlaskForm):
-    # form where a staff member can add update or delete menu items
-    pass
-
-class EditStaffForm(FlaskForm):
-    # form where a manager on the staff can add or change or delete the
-    # the staff members that they manage
-    pass
+    
+    delete_item = SelectField(label='Select Item to Delete', validators=[DataRequired()], coerce=int)
+    submit = SubmitField('Delete')

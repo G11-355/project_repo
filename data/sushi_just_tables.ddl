@@ -39,6 +39,7 @@ CREATE TABLE `order_contents_tb` (
 	`order_id` INT NOT NULL,
 	`item_id` INT NOT NULL,
 	`quantity` INT NOT NULL,
+	PRIMARY KEY (item_id),
 	FOREIGN KEY (order_id) REFERENCES order_tb(order_id),
     FOREIGN KEY (item_id) REFERENCES item_tb(item_id)
 );

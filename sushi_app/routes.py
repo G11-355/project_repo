@@ -8,7 +8,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 #from flask_bcrypt import Bcrypt
 #bcrypt = Bcrypt(app)
 
-from sushi_app.operations import assign_order_contents
+from sushi_app.operations import *
 #from flask_login import login_user, current_user, logout_user, login_required
 
 posts = [
@@ -40,22 +40,19 @@ def home():
 def about():
     return render_template('about.html', title='About')
 
+@app.route('/orderList')
+def list_order_items():
+        all_orders = get_order_items()
+        print(all_orders, '\n\n\n')
+        return render_template('orderList.html', order_items=all_orders)  # add template here
+
 @app.route('/order', methods=['GET', 'POST'])
 def place_order():
-    '''
-    items = Item.query.all()
-    item_dict = []
-    for item in items:
-        item_dict.append({'quantity': 0})
-    
-    form = OrderForm(items=item_dict)
-    return render_template('order.html', form=form)
-    '''
     if current_user.is_authenticated:
         form = OrderForm()
         if form.validate_on_submit():
             flash('Your order has been created!', 'success')
-            assign_order_contents(form.entry.data, current_user.username)
+            assign_order_contents(form.entry.data, current_user.user_id)
             
             return redirect(url_for('home'))
         else:
@@ -63,6 +60,39 @@ def place_order():
     else:
         flash('Please sign in first!')
         return redirect(url_for('login'))
+
+@app.route("/orderList/<int:order_id>/update", methods=['GET', 'POST'])
+def update_order(order_id):
+    order = Order.query.get_or_404(order_id)
+    form = OrderForm()
+    form.delete_item.choices = get_order_item(order_id=order_id)
+    if form.validate_on_submit():
+        remove_item_from_order(order.order_id, form.delete_item.data)
+        flash(f'Deleted item ID: {form.delete_item.data}')
+        return redirect(url_for('home'))
+    elif request.method == 'GET':
+        print('getting order item')
+        form.delete_item.choices = get_order_item(order_id=order_id)
+    return render_template('editOrder.html', form=form, order_id=order_id)
+
+    
+@app.route('/assign', methods=['GET', 'POST'])
+def assign_staff():
+    # user must be signed in and a manager
+    if current_user.is_authenticated and current_user.user_id == current_user.manager_id:
+        form = AssignStaffForm()
+        if form.validate_on_submit():
+            print('VALIDATED++++++++++++++++++++++++++++')
+            assign_staff_to_order(form.staff_dropdown.data, form.order_dropdown.data)  
+            flash('Staff has been assigned to order')
+            # add logic gor doing that here
+            return redirect(url_for('home'))
+        else:
+            print('NOT VALIDATED++++++++++++++++')
+            return render_template('assign.html', form=form)
+        
+    flash('You must be a manager and signed in!')
+    return redirect(url_for('login'))
     
 
 @app.route("/register", methods=['GET', 'POST'])
