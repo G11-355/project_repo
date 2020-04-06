@@ -155,7 +155,7 @@ def assignProj():
     form = ProjectUpdateForm()
     
     if form.validate_on_submit():
-        project = Order_Contents(orderid=form.orderid.data, itemid=form.itemid.data, quantity=1)
+        project = Order_Contents(order_id=form.orderid.data, item_id=form.itemid.data, quantity=1)
         db.session.add(project)
         try:
             db.session.commit()

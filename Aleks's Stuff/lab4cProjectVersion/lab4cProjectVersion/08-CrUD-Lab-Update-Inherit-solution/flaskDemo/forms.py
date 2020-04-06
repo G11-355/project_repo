@@ -128,13 +128,13 @@ class DeptForm(DeptUpdateForm):
 class ProjectUpdateForm(FlaskForm):
 
 #    dnumber=IntegerField('Department Number', validators=[DataRequired()])
-    pnoChar = HiddenField("")
+#    pnoChar = HiddenField("")
 
 #  Commented out using a text field, validated with a Regexp.  That also works, but a hassle to enter ssn.
 #    mgr_ssn = StringField("Manager's SSN", validators=[DataRequired(),Regexp('^(?!000|666)[0-8][0-9]{2}(?!00)[0-9]{2}(?!0000)[0-9]{4}$', message="Please enter 9 digits for a social security.")])
 
 #  One of many ways to use SelectField or QuerySelectField.  Lots of issues using those fields!!
-    itemid = SelectField("Item", choices=myChoices)  # myChoices defined at top
+    itemid = SelectField("Item", choices=myChoices, coerce = int)  # myChoices defined at top
     orderid = SelectField("Order", choices=myChoices2, coerce = int)
     submit = SubmitField('Create Order')
 # the regexp works, and even gives an error message
