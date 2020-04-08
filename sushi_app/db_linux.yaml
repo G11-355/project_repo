@@ -1,0 +1,6 @@
+mysql_host: '127.0.0.1'
+mysql_user: 'root'
+# Enter your password in field below
+mysql_password: 782Judson
+mysql_db: 'sushi'
+mysql_port: '3306'
