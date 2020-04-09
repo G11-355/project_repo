@@ -45,9 +45,10 @@ def list_order_items():
         all_orders = get_order_items()
         print(all_orders, '\n\n\n')
         return render_template('orderList.html', order_items=all_orders)  # add template here
-
+'''
 @app.route('/order', methods=['GET', 'POST'])
 def place_order():
+    # DEPR USE ORDER
     if current_user.is_authenticated:
         form = OrderForm()
         if form.validate_on_submit():
@@ -60,7 +61,7 @@ def place_order():
     else:
         flash('Please sign in first!')
         return redirect(url_for('login'))
-
+'''
 @app.route("/orderList/<int:order_id>/update", methods=['GET', 'POST'])
 def update_order(order_id):
     order = Order.query.get_or_404(order_id)
@@ -74,6 +75,54 @@ def update_order(order_id):
         print('getting order item')
         form.delete_item.choices = get_order_item(order_id=order_id)
     return render_template('editOrder.html', form=form, order_id=order_id)
+
+
+@app.route('/placeOrder/<int:current_order>', methods=['GET', 'POST'])
+def place_order(current_order=0):
+    if current_user.is_authenticated:
+        form = OrderTest()
+        if current_order == 0:
+            order = make_new_order(current_user.user_id)  # get a temp order id to use if submitted
+        else:
+            order = Order.query.get(current_order)
+        print('ORDERTEST ORDER', order.order_id)
+        
+        if form.validate_on_submit():
+            flash('Order has been placed!')
+            print(form.entry)
+            return redirect(url_for('review_order', order_id=order.order_id))
+        else:
+            return render_template('order.html', form=form, items=Item.query.all(), order=order)
+    else:
+        flash('Please sign in first!')
+        return redirect(url_for('login'))
+
+@app.route("/order/<int:item_id>/<int:order_id>/addToOrder", methods=['GET', 'POST'])
+def add_item(item_id, order_id):
+    # when access the order page an order id is generated for you
+    # and if the order doesnt get places then we delete it from database
+    item = Item.query.get(item_id)
+    form = addToOrderForm()
+    if form.validate_on_submit():
+        q = form.quantity.data
+        print(order_id, 'CURRENT ORDER ID')
+        add_item_to_order(order_id=order_id, item_id=item_id, quanity=q)
+        flash(f'{item.name} added to your order!')
+        return redirect(url_for('place_order', current_order=order_id))
+    return render_template('orderItem.html', form=form, item=item, order_id=order_id)
+
+@app.route("/review/<int:order_id>/", methods=['GET', 'POST'])
+def review_order(order_id):
+    items = get_order_items_and_total_price(order_id)
+    print(items)
+
+    return render_template('reviewOrder.html', items=items)
+    
+    
+    
+    
+    
+    
 
     
 @app.route('/assign', methods=['GET', 'POST'])

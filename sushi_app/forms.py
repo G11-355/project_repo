@@ -61,3 +61,13 @@ class OrderForm(FlaskForm):
 class EditOrderForm(FlaskForm):
     delete_item = SelectField(label='Select Item to Delete', validators=[DataRequired()], coerce=int)
     submit = SubmitField('Delete')
+
+
+class OrderTest(FlaskForm):
+    entry = IntegerField(label='Quantity', default=0)
+    submit = SubmitField(label='Submit Order')
+
+
+class addToOrderForm(FlaskForm):
+    quantity = IntegerField(label='Quantity', default=1)
+    submit = SubmitField(label='Add Item')

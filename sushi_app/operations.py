@@ -3,12 +3,23 @@ from sushi_app.models import *
 from random import choice
 from sushi_app import db
 
+def get_order_id():
+    '''
+    Returns a valid order id that can be used for the current order.
+    '''
+    order_ids = Order.query.all()
+    if order_ids:
+        return sorted(order_ids, key=lambda x: x.order_id)[-1].order_id + 1
+    else:
+        return 1
+
+
 
 def assign_order_contents(order_contents, customer_id):
     order_ID = len(Order.query.all()) + 1
     date = datetime.now()
     date = f'{date.year}-{date.month}-{date.day}'
-    
+
     users = User.query.all()
     cook = choice([user for user in users if user.specialty != None]).user_id
     order_contents = order_contents.split('\n')
@@ -23,10 +34,10 @@ def assign_order_contents(order_contents, customer_id):
             item_id, quantity = items.split(' ')[0:2]
             item_id = item_id.strip()
             quantity = quantity.strip()
-            new_order_contents = OrderContents(order_id=order_ID, item_id=item_id, quantity=quantity)
+            new_order_contents = OrderContents(
+                order_id=order_ID, item_id=item_id, quantity=quantity)
             db.session.add(new_order_contents)
             db.session.commit()
-
 
 
 def assign_staff_to_order(user_id, order_id):
@@ -38,37 +49,106 @@ def assign_staff_to_order(user_id, order_id):
 def get_order_items():
     # returns list of dictionaries order and the items in that order
     #order_items = db.session.query(Order, Item, OrderContents).join(Order).join(Item).join(OrderContents).filter(Order.order_id == OrderContents.order_id, Item.item_id == OrderContents.item_id).all()
-    order_items = list(db.session.execute('SELECT ot.order_id, it.item_id, oct.quantity, ot.order_date FROM order_tb as ot JOIN order_contents_tb as oct on ot.order_id = oct.order_id JOIN item_tb as it ON it.item_id = oct.item_id'))
+    order_items = list(db.session.execute(
+        'SELECT ot.order_id, it.item_id, oct.quantity, ot.order_date FROM order_tb as ot JOIN order_contents_tb as oct on ot.order_id = oct.order_id JOIN item_tb as it ON it.item_id = oct.item_id'))
     unique_orders = {}
     for order in order_items:
         if order[0] in unique_orders:
-            unique_orders[order[0]].append([order[1], Item.query.filter_by(item_id=order[1]).first().name, order[-2], order[-1]])
+            unique_orders[order[0]].append([order[1], Item.query.filter_by(
+                item_id=order[1]).first().name, order[-2], order[-1]])
             # add the item name and the quantity ordered to list for that order id
         else:
-            unique_orders[order[0]] = [[order[1], Item.query.filter_by(item_id=order[1]).first().name, order[-2], order[-1]]]
+            unique_orders[order[0]] = [[order[1], Item.query.filter_by(
+                item_id=order[1]).first().name, order[-2], order[-1]]]
     # {order_id: [[item, quanity], [item: quant]]}
     return unique_orders
+
 
 def get_order_item(order_id):
     item_choices = []
     items_in_order = get_order_items()[order_id]
     for item in items_in_order:
-        item_choices.append((item[0], item[1]))  # (itemid, itemname)
+        item_choices.append((item[0], item[1], item[2]))  # (itemid, itemname)
     return item_choices
 
+def get_order_items_and_total_price(order_id):
+    items_ordered = get_order_items()[order_id]
+    item_name_quant_cost = []
+    for item in items_ordered:
+        cost = Item.query.get(item[0]).cost
+        item_name_quant_cost.append([item[0], item[1], item[2],
+                                     item[2] * cost])
+    
+    return item_name_quant_cost
+    
+
+
 def remove_item_from_order(order_id, item_id):
-    order_contents = OrderContents.query.filter(OrderContents.order_id==order_id, OrderContents.item_id == item_id).first()
+    order_contents = OrderContents.query.filter(
+        OrderContents.order_id == order_id, OrderContents.item_id == item_id).first()
     db.session.delete(order_contents)
     db.session.commit()
-    
-    
-    
 
-    
-        
-    
-    # join on 
-    
-    
 
-        
+def add_item_to_order(order_id, item_id, quanity):
+    new_content = OrderContents(order_id=order_id, item_id=item_id,
+                                quantity=quanity)
+    db.session.add(new_content)
+    db.session.commit()
+
+
+def get_current_datetime():
+    '''
+    Returns the datetime at the time of the function call.
+    '''
+    date = datetime.now()
+    return f'{date.year}-{date.month}-{date.day}'
+
+
+
+def make_new_order(customer_id, staff_id=None):
+    '''
+    Makes a new order based on the given customer_id. If staff id is left as 
+    none then randomly assigns a staff member to the order. Queries the Order
+    table to get an allowed order_id.
+    '''
+    order_id = get_order_id()
+    if staff_id == None:  # if staff id not given assign random staff
+        users = User.query.all()
+        staff_id = choice([user for user in users if user.specialty != None]).user_id
+    
+    order = Order(order_id=order_id, customer_id=customer_id,
+                  staff_id=staff_id, order_date=get_current_datetime())
+    
+    session_add_commit(order)
+    
+    return order
+
+
+def remove_order(order_id):
+    '''
+    Remove all entries in the ordercontents table with a given order id. Then
+    remove that order with the order_id from the order table.
+    '''
+    if Order.query.get(order_id):  # if a valid order
+        contents = OrderContents.query.filter_by(order_id=order_id)
+        order = Order.query.filter_by(order_id)
+        for con in contents:
+            db.session.delete(con)
+
+        db.session.delete(order)
+        db.session.commit()
+
+
+def get_order_contents(order_id, item_id):
+    '''
+    Given an order id and the item id returns an order contents object if it
+    exists
+    '''
+    return OrderContents.query.filter(OrderContents.order_id == order_id, OrderContents.item_id == item_id)
+
+    # join on
+
+def session_add_commit(thing_to_add):
+    db.session.add(thing_to_add)
+    db.session.commit()

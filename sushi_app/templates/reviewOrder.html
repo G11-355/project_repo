@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block content %}
+    
+        <article class="media content-section">
+          <div class="media-body">
+            <div class="article-metadata">
+              <h1>Your Order</h1>
+            </div>
+            {% for item in items %}
+            <p class="article-content">{{ item[1]}}  {{item[2]}}  {{item[3]}}</p>
+            {% endfor %}
+          </div>
+        </article>
+{% endblock content %}

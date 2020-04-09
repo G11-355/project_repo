@@ -1,28 +1,20 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="content-section">
-    <form method="POST" action="">
-        {{ form.hidden_tag() }}
-        <fieldset class="form-group">
-            <h1>Ordering as: {{current_user}}</h1>
-            <legend class="border-bottom mb-4">{{ legend }}</legend>
-
-            <div class="form-group">
-                {{ form.entry.label(class="form-control-label") }}
-                {% if form.entry.errors %}
-                    {{ form.entry(class="form-control form-control-lg is-invalid") }}
-                    <div class="invalid-feedback">
-                        {% for error in form.title.errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form.entry(class="form-control form-control-lg") }}
-                {% endif %}
-        </fieldset>
-        <div class="form-group">
-            {{ form.submit(class="btn btn-outline-info") }}
-        </div>
-    </form>
-</div>
+<form method="POST" action="">
+  {{ form.hidden_tag() }}
+    {% for item in items %}
+        <article class="media content-section">
+          <div class="media-body">
+            <div class="article-metadata">
+              <h2>{{ item.name }}</h2>
+            </div>
+            <p class="article-content">Price: {{ item.cost }} $</p>
+            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('add_item', item_id=item.item_id, order_id=order.order_id) }}">Add to Order</a>
+          </div>
+        </article>
+    {% endfor %}
+    <div class="form-group">
+      {{ form.submit(class="btn btn-outline-info") }}
+  </div>
+  </form>
 {% endblock content %}

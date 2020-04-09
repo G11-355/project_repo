@@ -41,7 +41,7 @@ INSERT INTO user_tb(username,first_name,last_name,password,phone_number,address,
 
 
 CREATE TABLE `order_tb` (
-	`order_id` INT NOT NULL AUTO_INCREMENT,
+	`order_id` INT NOT NULL,
 	`customer_id` INT NOT NULL,
 	`staff_id` INT NOT NULL,
 	`order_date` DATE NOT NULL,
