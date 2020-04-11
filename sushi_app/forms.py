@@ -71,3 +71,8 @@ class OrderTest(FlaskForm):
 class addToOrderForm(FlaskForm):
     quantity = IntegerField(label='Quantity', default=1)
     submit = SubmitField(label='Add Item')
+
+class reviewOrderForm(FlaskForm):
+    submit = SubmitField(label='Complete Order')
+    cancel = SubmitField(label='Cancel Order')
+    edit = SubmitField(label='Edit Order')

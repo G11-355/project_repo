@@ -2,7 +2,10 @@
 {% block content %}
 <form method="POST" action="">
   {{ form.hidden_tag() }}
-    {% for item in items %}
+    {% for category in items %}
+        <h1>{{category}}</h1>
+        <hr>
+        {% for item in items[category] %}
         <article class="media content-section">
           <div class="media-body">
             <div class="article-metadata">
@@ -12,6 +15,7 @@
             <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('add_item', item_id=item.item_id, order_id=order.order_id) }}">Add to Order</a>
           </div>
         </article>
+        {% endfor %}
     {% endfor %}
     <div class="form-group">
       {{ form.submit(class="btn btn-outline-info") }}

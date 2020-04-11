@@ -42,9 +42,15 @@ def about():
 
 @app.route('/orderList')
 def list_order_items():
-        all_orders = get_order_items()
+    if current_user.is_authenticated:
+        all_orders = filter_order_by_user(current_user.user_id, get_order_items())
         print(all_orders, '\n\n\n')
-        return render_template('orderList.html', order_items=all_orders)  # add template here
+        return render_template('orderList.html', order_items=all_orders,
+                               current_user=current_user)  # add template here
+    else:
+        flash('Please sign in to view your order history!')
+        return redirect(url_for('login'))
+        
 '''
 @app.route('/order', methods=['GET', 'POST'])
 def place_order():
@@ -79,6 +85,8 @@ def update_order(order_id):
 
 @app.route('/placeOrder/<int:current_order>', methods=['GET', 'POST'])
 def place_order(current_order=0):
+    items_by_type_dict = get_item_by_type()
+    
     if current_user.is_authenticated:
         form = OrderTest()
         if current_order == 0:
@@ -88,11 +96,10 @@ def place_order(current_order=0):
         print('ORDERTEST ORDER', order.order_id)
         
         if form.validate_on_submit():
-            flash('Order has been placed!')
-            print(form.entry)
             return redirect(url_for('review_order', order_id=order.order_id))
         else:
-            return render_template('order.html', form=form, items=Item.query.all(), order=order)
+            return render_template('order.html', form=form, items=items_by_type_dict,
+                                   order=order)
     else:
         flash('Please sign in first!')
         return redirect(url_for('login'))
@@ -113,10 +120,25 @@ def add_item(item_id, order_id):
 
 @app.route("/review/<int:order_id>/", methods=['GET', 'POST'])
 def review_order(order_id):
-    items = get_order_items_and_total_price(order_id)
-    print(items)
-
-    return render_template('reviewOrder.html', items=items)
+    form = reviewOrderForm()
+    items, total_cost = get_order_items_and_total_price(order_id)
+    if form.validate_on_submit():
+        print(form.submit.data, form.edit.data, form.cancel.data)
+        if form.submit.data:
+            flash('Order has been submited. Thank you!')
+            return redirect(url_for('list_order_items'))
+        elif form.edit.data:
+            print('Redirecting to place order!')
+            return redirect(url_for('place_order', current_order=order_id))
+        else:
+            # wants to cancel order need to remove from database
+            # since it has already been added
+            remove_order(order_id)
+            flash('Your order has been canceled!')
+            return redirect(url_for('home'))
+            
+    return render_template('reviewOrder.html', items=items, form=form,
+                           total_cost=total_cost, user=current_user)
     
     
     

@@ -64,6 +64,25 @@ def get_order_items():
     return unique_orders
 
 
+def filter_order_by_user(current_user_id, orders_dict):
+    '''
+    Filter orders that are shown. If user if is an employee return
+    all orders in orders_dict. If not then return just the orders the
+    current_user_id has placed.
+    '''
+    if User.query.get(current_user_id).manager_id:  # is an employee
+        print(User.query.get(current_user_id).manager_id, 'manager id')
+        return orders_dict  # allow to see all orders
+    else:  # else filter orders by those customer has made
+        customer_orders = {}
+        for order in orders_dict:
+            if Order.query.get(order).customer_id == current_user_id:
+                customer_orders[order] = orders_dict[order]
+        print(customer_orders)
+        return customer_orders
+            
+
+
 def get_order_item(order_id):
     item_choices = []
     items_in_order = get_order_items()[order_id]
@@ -74,14 +93,30 @@ def get_order_item(order_id):
 def get_order_items_and_total_price(order_id):
     items_ordered = get_order_items()[order_id]
     item_name_quant_cost = []
+    grand_total = 0
     for item in items_ordered:
         cost = Item.query.get(item[0]).cost
         item_name_quant_cost.append([item[0], item[1], item[2],
                                      item[2] * cost])
+        grand_total += item[2]  * cost
+    return item_name_quant_cost, grand_total
     
-    return item_name_quant_cost
-    
+def get_item_by_type():
+    '''
+    Returns a dictionary of items where the key is the item type. If the key is
+    in the TRANS_DICT it will return the value of that key in the trans_dict.
+    '''
+    TRANS_DICT = {'app': 'Appitizers', 'sal': 'Salads', 'sop': 'Soups',
+                  'ent': 'Entrees', 'drk': 'Drinks'}
+    item_dict = {}
+    for item in Item.query.all():
+        if item.type in item_dict:
+            item_dict[item.type].append(item)
+        else:
+            item_dict[item.type] = [item]
+    item_dict = {TRANS_DICT[t]: item_dict[t] for t in item_dict if t in TRANS_DICT}
 
+    return item_dict
 
 def remove_item_from_order(order_id, item_id):
     order_contents = OrderContents.query.filter(
@@ -132,10 +167,12 @@ def remove_order(order_id):
     '''
     if Order.query.get(order_id):  # if a valid order
         contents = OrderContents.query.filter_by(order_id=order_id)
-        order = Order.query.filter_by(order_id)
+        print(contents)
+        order = Order.query.get(order_id)
+        print(order)
         for con in contents:
             db.session.delete(con)
-
+        
         db.session.delete(order)
         db.session.commit()
 
