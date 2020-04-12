@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">{{ legend }}</legend>
+            <h2>Delete Item from Order: {{order_id}}</h2>
+            <div class="form-group">
+                {{ form.delete_item.label(class="form-control-label") }}
+                {% if form.delete_item.errors %}
+                    {{ form.delete_item(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.delete_item.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.delete_item(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
+{% endblock content %}

@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+{% block content %}
+<form method="POST" action="">
+  {{ form.hidden_tag() }}
+        <article class="media content-section">
+          <div class="media-body">
+            <div class="article-metadata">
+              <h1>Your Order</h1>
+            </div>
+            <br>
+            <style type="text/css">
+              .tg  {border-collapse:collapse;border-spacing:0;border-color:#ccc;}
+              .tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:#ccc;color:#333;background-color:#fff;}
+              .tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:14px 20px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:#ccc;color:#333;background-color:#f0f0f0;}
+              .tg .tg-cly1{text-align:left;vertical-align:middle}
+              </style>
+            <h3>Customer Info</h3>
+            <p>Call Back Number: {{current_user.phone_number}}</p>
+            <p>Address: {{current_user.address}}</p>
+
+
+            <h3>Order Details</h3>
+            <table class="tg">
+              <tr>
+                <th class="tg-cly1"><h5>Item ID</h5></th>
+                <th class="tg-cly1"><h5>Item Name</h5><br></th>
+                <th class="tg-cly1"><h5>Quantity Ordered</h5></th>
+                <th class="tg-cly1"><h5>Item Cost</h5></th>
+              </tr>
+              {% for item in items %}
+                <tr>
+                  <th class="tg-cly1">{{item[0]}}</th>
+                  <th class="tg-cly1">{{item[1]}}</th>
+                  <th class="tg-cly1"><span>{{item[2]}}</span></th>
+                  <th class="tg-cly1"><span>{{item[3]}}</span></th>
+                </tr>
+          {% endfor %}
+        </table>
+        <br><br>
+        <h3>Grand Total: {{total_cost}}$</h3>
+        <br><br>
+        <div class="form-group">
+          {{ form.submit(class="btn btn-outline-info") }}
+          {{ form.edit(class="btn btn-outline-info") }}
+          {{ form.cancel(class="btn btn-outline-info") }}
+      </div>
+    </form>
+          </div>
+        </article>
+{% endblock content %}
