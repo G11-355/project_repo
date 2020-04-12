@@ -55,26 +55,27 @@ CREATE TABLE `item_tb` (
     `name` VARCHAR(100) NOT NULL,
 	`cost` FLOAT NOT NULL,
 	`type` VARCHAR(100) NOT NULL,
+	`description` VARCHAR(2000),
 	PRIMARY KEY (`item_id`)
 );
 
-INSERT INTO item_tb(item_id,name,cost,type) VALUES (0,'Edamame',5.00,'app');
-INSERT INTO item_tb(item_id,name,cost,type) VALUES (1,'Takoyaki',7.50,'app');
-INSERT INTO item_tb(item_id,name,cost,type) VALUES (2,'Gyoza',6.50,'app');
-INSERT INTO item_tb(item_id,name,cost,type) VALUES (3,'Age-Dashi Tofu',6.50,'app');
-INSERT INTO item_tb(item_id,name,cost,type) VALUES (4,'Crab Rangoon',6.50,'app');
-INSERT INTO item_tb(item_id,name,cost,type) VALUES (5,'Mixed Greens Salad',6.00,'sal');
-INSERT INTO item_tb(item_id,name,cost,type) VALUES (6,'Tuna Avocado Salad',9.00,'sal');
-INSERT INTO item_tb(item_id,name,cost,type) VALUES (7,'Miso Soup',2.50,'sop');
-INSERT INTO item_tb(item_id,name,cost,type) VALUES (8,'Tom Kha Soup',5.95,'sop');
-INSERT INTO item_tb(item_id,name,cost,type) VALUES (9,'Tonkotsu Ramen',12.95,'sop');
-INSERT INTO item_tb(item_id,name,cost,type) VALUES (10,'Shrimp Tempura',13.95,'ent');
-INSERT INTO item_tb(item_id,name,cost,type) VALUES (11,'Chicken Katsu',13.95,'ent');
-INSERT INTO item_tb(item_id,name,cost,type) VALUES (12,'Panang Curry',14.95,'ent');
-INSERT INTO item_tb(item_id,name,cost,type) VALUES (13,'Salmon Roll',8.00,'ent');
-INSERT INTO item_tb(item_id,name,cost,type) VALUES (14,'Philly Maki',8.50,'ent');
-INSERT INTO item_tb(item_id,name,cost,type) VALUES (15,'Spicy Tuna Maki',9.50,'ent');
-INSERT INTO item_tb(item_id,name,cost,type) VALUES (16,'Dragon Maki',15.00,'ent');
+INSERT INTO item_tb(item_id,name,cost,type,description) VALUES (0,'Edamame',5.00,'app', 'Steamed Japanese Soy Bean, Sprinkled Lightly with Salt.');
+INSERT INTO item_tb(item_id,name,cost,type,description) VALUES (1,'Takoyaki',7.50,'app', '(6 Pieces) Crispy Octopus Puffs Topped with Fish Bonito, Seaweed, MayoSweet Brown Sauce and Sesame Seeds.');
+INSERT INTO item_tb(item_id,name,cost,type,description) VALUES (2,'Gyoza',6.50,'app', '(5 pieces) Pan Fried Japanese Chicken Dumpling.');
+INSERT INTO item_tb(item_id,name,cost,type,description) VALUES (3,'Age-Dashi Tofu',6.50,'app', 'A creamy soft tofu, sliced thin and quick fried for crispiness, served in a hot broth with ginger and garnished with green onion.');
+INSERT INTO item_tb(item_id,name,cost,type,description) VALUES (4,'Crab Rangoon',6.50,'app', '(6 Pieces) Soft Cream Cheese, Crab Stick, Celery, Water Chestnut and Carrots; Wrapped in Crispy Spring Roll Skin. Served with Sweet & Sour Sauce.');
+INSERT INTO item_tb(item_id,name,cost,type,description) VALUES (5,'Mixed Greens Salad',6.00,'sal', 'Mixed Greens, Carrots, Cucumbers and Tomatoes. Served With Japanese Style Ginger Dressing Or Creamy Homemade Dressing.');
+INSERT INTO item_tb(item_id,name,cost,type,description) VALUES (6,'Tuna Avocado Salad',9.00,'sal', 'Mixed greens Topped with Sliced fresh Tuna ');
+INSERT INTO item_tb(item_id,name,cost,type,description) VALUES (7,'Miso Soup',2.50,'sop', 'Soy bean Broth with Soft tofu, Scallions, and Seaweed.');
+INSERT INTO item_tb(item_id,name,cost,type,description) VALUES (8,'Tom Kha Soup',5.95,'sop', '(Chicken Or Tofu) Coconut Broth with Mushroom, Tomato, Onion, Galangal, Lemongrass and Cilantro.');
+INSERT INTO item_tb(item_id,name,cost,type,description) VALUES (9,'Tonkotsu Ramen',12.95,'sop', 'Japanese Egg Noodles, Pork Broth, Pork Chashu, Marinated Bamboo Shoots, Quail Eggs, Spinach, Japanese Prepared Vegetables, Bean Sprouts and Sesame Seeds. Topped with Green Onion, Fish Cake and Seaweed Sheet.');
+INSERT INTO item_tb(item_id,name,cost,type,description) VALUES (10,'Shrimp Tempura',13.95,'ent', 'Deep Fried Shrimp and Vegetables Tempura with Tempura Sauce.');
+INSERT INTO item_tb(item_id,name,cost,type,description) VALUES (11,'Chicken Katsu',13.95,'ent', 'Breaded Deep-Fried Chicken Served with Our Chef`s Signature Sauce.');
+INSERT INTO item_tb(item_id,name,cost,type,description) VALUES (12,'Panang Curry',14.95,'ent', 'Choice of Salmon or Rib Eye Steak with Kefir Lime Leaf, Bell Pepper, Green Beans, Peas, Carrots and Asparagus in Coconut Milk and Panang Curry.');
+INSERT INTO item_tb(item_id,name,cost,type,description) VALUES (13,'Salmon Roll',8.00,'ent', 'Fresh salmon.');
+INSERT INTO item_tb(item_id,name,cost,type,description) VALUES (14,'Philly Maki',8.50,'ent', 'Smoked salmon, avocado, and cream cheese.');
+INSERT INTO item_tb(item_id,name,cost,type,description) VALUES (15,'Spicy Tuna Maki',9.50,'ent', 'Chopped tuna, masago mayo and chili sauce.');
+INSERT INTO item_tb(item_id,name,cost,type,description) VALUES (16,'Dragon Maki',15.00,'ent', 'Shrimp tempura, masago mayo, topped with fresh water eel, avocado, and unagi sauce.');
 INSERT INTO item_tb(item_id,name,cost,type) VALUES (17,'Soft Drink',1.75,'drk');
 INSERT INTO item_tb(item_id,name,cost,type) VALUES (18,'Thai Iced Tea',2.50,'drk');
 INSERT INTO item_tb(item_id,name,cost,type) VALUES (19,'Green Tea',1.75,'drk');

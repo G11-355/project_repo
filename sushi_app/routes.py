@@ -86,6 +86,7 @@ def update_order(order_id):
 @app.route('/placeOrder/<int:current_order>', methods=['GET', 'POST'])
 def place_order(current_order=0):
     items_by_type_dict = get_item_by_type()
+    print(items_by_type_dict)
     
     if current_user.is_authenticated:
         form = OrderTest()

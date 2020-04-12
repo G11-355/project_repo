@@ -26,6 +26,7 @@
                 <th class="tg-cly1"><h5>Item Name</h5><br></th>
                 <th class="tg-cly1"><h5>Quantity Ordered</h5></th>
                 <th class="tg-cly1"><h5>Item Cost</h5></th>
+                <th class="tg-cly1"><h5>Item Total</h5></th>
               </tr>
               {% for item in items %}
                 <tr>
@@ -33,6 +34,7 @@
                   <th class="tg-cly1">{{item[1]}}</th>
                   <th class="tg-cly1"><span>{{item[2]}}</span></th>
                   <th class="tg-cly1"><span>{{item[3]}}</span></th>
+                  <th class="tg-cly1"><span>{{item[4]}}</span></th>
                 </tr>
           {% endfor %}
         </table>
