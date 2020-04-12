@@ -93,13 +93,14 @@ def place_order(current_order=0):
             order = make_new_order(current_user.user_id)  # get a temp order id to use if submitted
         else:
             order = Order.query.get(current_order)
-        print('ORDERTEST ORDER', order.order_id)
+        
+        current_item_ids = [item[0] for item in get_order_item(order.order_id)]
         
         if form.validate_on_submit():
             return redirect(url_for('review_order', order_id=order.order_id))
         else:
             return render_template('order.html', form=form, items=items_by_type_dict,
-                                   order=order)
+                                   order=order, current_item_ids=current_item_ids)
     else:
         flash('Please sign in first!')
         return redirect(url_for('login'))
@@ -117,6 +118,28 @@ def add_item(item_id, order_id):
         flash(f'{item.name} added to your order!')
         return redirect(url_for('place_order', current_order=order_id))
     return render_template('orderItem.html', form=form, item=item, order_id=order_id)
+
+
+@app.route("/order/<int:item_id>/<int:order_id>/edit", methods=['GET', 'POST'])
+def edit_item(item_id, order_id):
+    # when access the order page an order id is generated for you
+    # and if the order doesnt get places then we delete it from database
+    item = Item.query.get(item_id)
+    form = editToOrderForm()
+    current_quant = get_quantity_item_in_order(order_id, item_id)
+    if form.validate_on_submit():
+        q = form.quantity.data
+        if q == 0:
+            print('Removing Item')
+            remove_item_from_order(order_id, item_id)
+        else:
+            edit_item_quantity_in_order(order_id, item_id, q)
+            print('edit to', q)
+        return redirect(url_for('place_order', current_order=order_id))
+    return render_template('editItem.html', form=form, item=item,
+                           order_id=order_id, current_quant=current_quant)
+
+
 
 @app.route("/review/<int:order_id>/", methods=['GET', 'POST'])
 def review_order(order_id):

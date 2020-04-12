@@ -48,7 +48,6 @@ def assign_staff_to_order(user_id, order_id):
 
 def get_order_items():
     # returns list of dictionaries order and the items in that order
-    #order_items = db.session.query(Order, Item, OrderContents).join(Order).join(Item).join(OrderContents).filter(Order.order_id == OrderContents.order_id, Item.item_id == OrderContents.item_id).all()
     order_items = list(db.session.execute(
         'SELECT ot.order_id, it.item_id, oct.quantity, ot.order_date FROM order_tb as ot JOIN order_contents_tb as oct on ot.order_id = oct.order_id JOIN item_tb as it ON it.item_id = oct.item_id'))
     unique_orders = {}
@@ -81,13 +80,13 @@ def filter_order_by_user(current_user_id, orders_dict):
         print(customer_orders)
         return customer_orders
             
-
-
 def get_order_item(order_id):
     item_choices = []
-    items_in_order = get_order_items()[order_id]
-    for item in items_in_order:
-        item_choices.append((item[0], item[1], item[2]))  # (itemid, itemname)
+    all_item_orders = get_order_items()
+    if order_id in all_item_orders:
+        items_in_order = get_order_items()[order_id]
+        for item in items_in_order:
+            item_choices.append((item[0], item[1], item[2]))  # (itemid, itemname)
     return item_choices
 
 def get_order_items_and_total_price(order_id):
@@ -100,13 +99,26 @@ def get_order_items_and_total_price(order_id):
                                      item[2] * cost])
         grand_total += item[2]  * cost
     return item_name_quant_cost, grand_total
+
+def get_quantity_item_in_order(order_id, item_id):
+    items_in_order = get_order_item(order_id)
+    return [item[2] for item in items_in_order if item[0] == item_id][0]
+
+def edit_item_quantity_in_order(order_id, item_id, new_quantity):
+    order_contents = OrderContents.query.filter_by(order_id=order_id, item_id=item_id).first()
+    db.session.delete(order_contents)
+    db.session.add(OrderContents(order_id=order_contents.order_id,
+                                 item_id=order_contents.item_id,
+                                 quantity=new_quantity))
+    db.session.commit()
+    
     
 def get_item_by_type():
     '''
     Returns a dictionary of items where the key is the item type. If the key is
     in the TRANS_DICT it will return the value of that key in the trans_dict.
     '''
-    TRANS_DICT = {'app': 'Appitizers', 'sal': 'Salads', 'sop': 'Soups',
+    TRANS_DICT = {'app': 'Appetizers', 'sal': 'Salads', 'sop': 'Soups',
                   'ent': 'Entrees', 'drk': 'Drinks'}
     item_dict = {}
     for item in Item.query.all():
@@ -119,8 +131,10 @@ def get_item_by_type():
     return item_dict
 
 def remove_item_from_order(order_id, item_id):
-    order_contents = OrderContents.query.filter(
-        OrderContents.order_id == order_id, OrderContents.item_id == item_id).first()
+    order_contents = OrderContents.query.filter_by(order_id=order_id,
+                                                   item_id=item_id).first()
+        
+    print(order_contents, '00000000000000000000000000000000000000000')
     db.session.delete(order_contents)
     db.session.commit()
 
@@ -172,6 +186,7 @@ def remove_order(order_id):
         print(order)
         for con in contents:
             db.session.delete(con)
+        db.session.commit()
         
         db.session.delete(order)
         db.session.commit()

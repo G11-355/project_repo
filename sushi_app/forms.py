@@ -37,9 +37,9 @@ class AssignStaffForm(FlaskForm):
     customer_orders = db.session.query(Order, User).join(Order, User.user_id == Order.customer_id).all()
     users = User.query.all()
     customers, staff = [], []
-    for co in customer_orders:
-        customers.append((co[0].order_id, f'{co[1].username} {co[0].order_date}'))
-    print(customers, '*******************************************')
+    if customer_orders:
+        for co in customer_orders:
+            customers.append((co[0].order_id, f'{co[1].username} {co[0].order_date}'))
         # set up order choices based on customers who have made orders
     for s in users:
         if s.manager_id:
@@ -71,6 +71,11 @@ class OrderTest(FlaskForm):
 class addToOrderForm(FlaskForm):
     quantity = IntegerField(label='Quantity', default=1)
     submit = SubmitField(label='Add Item')
+
+
+class editToOrderForm(FlaskForm):
+    quantity = IntegerField(label='Enter New Quantity', default=0)
+    submit = SubmitField(label='Edit Quantity')
 
 class reviewOrderForm(FlaskForm):
     submit = SubmitField(label='Complete Order')
