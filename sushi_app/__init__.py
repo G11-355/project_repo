@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 
-ENV = 'SQL_URI'
+ENV = 'SQL_URI'  # this is the name of our enviromental variable if set
 
 app = Flask(__name__)
 
