@@ -1,17 +1,87 @@
 
-
 {% extends "layout.html" %}
 {% block content %}
+	<style>
+	
+	
+		body {
+			background-image: url('https://cmkt-image-prd.freetls.fastly.net/0.1.0/ps/4056304/910/607/m2/fpnw/wm1/vxe366bopjmfzyzyimmkqfb7t0gtau1metavpmx8jyplaectvo0sc0y2cwxs7kte-.jpg?1519553652&s=f202e1127b47913a2e44e1c07a37cc6b');
+		}
+		
+	</style>
+{% block apps %}
+<h1>Appetizers</h1>
     {% for item in items %}
-        <article class="media content-section">
-          <div class="media-body">
-            <div class="article-metadata">
-              <a class="mr-2" href="#">{{ item.name }}</a>
-              <small class="text-muted">{{ item.item_id }}</small>
-            </div>
-            <h2><a class="article-title" href="#">{{ item.name }}</a></h2>
-            <p class="article-content">{{ item.cost }}</p>
-          </div>
-        </article>
+	{% if item.type =="app" %}
+	<article class ="media content-section">
+				<ul>
+					<h2>{{ item.name }}</h1>
+					<h3>{{ item.cost }}</h2>
+					<br>
+				</ul>
+		</article>
+	{% endif %}
     {% endfor %}
+{% endblock apps %}
+
+{% block soups %}
+	<h1>Soups</h1>
+    {% for item in items %}
+	{% if item.type =="sop" %}
+	<article class ="media content-section">
+				<ul>
+					<h2>{{ item.name }}</h1>
+					<h3>{{ item.cost }}</h2>
+					<br>
+				</ul>
+		</article>
+	{% endif %}
+    {% endfor %}
+{% endblock soups %}
+
+{% block ents %}
+	<h1>Entrees</h1>
+    {% for item in items %}
+	{% if item.type =="ent" %}
+	<article class ="media content-section">
+				<ul>
+					<h2>{{ item.name }}</h1>
+					<h3>{{ item.cost }}</h2>
+					<br>
+				</ul>
+		</article>
+	{% endif %}
+    {% endfor %}
+{% endblock ents %}
+
+{% block sals %}
+	<h1>Salads</h1>
+    {% for item in items %}
+	{% if item.type =="sal" %}
+	<article class ="media content-section">
+				<ul>
+					<h2>{{ item.name }}</h1>
+					<h3>{{ item.cost }}</h2>
+					<br>
+				</ul>
+		</article>
+	{% endif %}
+    {% endfor %}
+{% endblock sals %}
+
+{% block drinks %}
+	<h1>Drinks</h1>
+    {% for item in items %}
+	{% if item.type =="drk" %}
+	<article class ="media content-section">
+				<ul>
+					<h2>{{ item.name }}</h1>
+					<h3>{{ item.cost }}</h2>
+					<br>
+				</ul>
+		</article>
+	{% endif %}
+    {% endfor %}
+{% endblock drinks %}
+
 {% endblock content %}
