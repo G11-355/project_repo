@@ -11,23 +11,6 @@ from flask_login import login_user, current_user, logout_user, login_required
 from sushi_app.operations import *
 #from flask_login import login_user, current_user, logout_user, login_required
 
-posts = [
-    {
-        'author': 'Corey Schafer',
-        'title': 'Blog Post 1',
-        'content': 'First post content',
-        'date_posted': 'April 20, 2018'
-    },
-    {
-        'author': 'Jane Doe',
-        'title': 'Blog Post 2',
-        'content': 'Second post content',
-        'date_posted': 'April 21, 2018'
-    }
-]
-# just for testing
-
-
 
 @app.route("/", methods=['GET', 'POST'])
 @app.route("/home")
@@ -40,17 +23,19 @@ def home():
 def about():
     return render_template('about.html', title='About')
 
+
 @app.route('/orderList')
 def list_order_items():
     if current_user.is_authenticated:
-        all_orders = filter_order_by_user(current_user.user_id, get_order_items())
-        print(all_orders, '\n\n\n')
+        all_orders = filter_order_by_user(
+            current_user.user_id, get_order_items())
         return render_template('orderList.html', order_items=all_orders,
                                current_user=current_user)  # add template here
     else:
         flash('Please sign in to view your order history!')
         return redirect(url_for('login'))
-        
+
+
 '''
 @app.route('/order', methods=['GET', 'POST'])
 def place_order():
@@ -67,7 +52,7 @@ def place_order():
     else:
         flash('Please sign in first!')
         return redirect(url_for('login'))
-'''
+
 @app.route("/orderList/<int:order_id>/update", methods=['GET', 'POST'])
 def update_order(order_id):
     order = Order.query.get_or_404(order_id)
@@ -81,22 +66,23 @@ def update_order(order_id):
         print('getting order item')
         form.delete_item.choices = get_order_item(order_id=order_id)
     return render_template('editOrder.html', form=form, order_id=order_id)
+'''
 
 
 @app.route('/placeOrder/<int:current_order>', methods=['GET', 'POST'])
 def place_order(current_order=0):
     items_by_type_dict = get_item_by_type()
-    print(items_by_type_dict)
-    
+
     if current_user.is_authenticated:
         form = OrderTest()
         if current_order == 0:
-            order = make_new_order(current_user.user_id)  # get a temp order id to use if submitted
+            # get a temp order id to use if submitted
+            order = make_new_order(current_user.user_id)
         else:
             order = Order.query.get(current_order)
-        
+
         current_item_ids = [item[0] for item in get_order_item(order.order_id)]
-        
+
         if form.validate_on_submit():
             return redirect(url_for('review_order', order_id=order.order_id))
         else:
@@ -105,6 +91,7 @@ def place_order(current_order=0):
     else:
         flash('Please sign in first!')
         return redirect(url_for('login'))
+
 
 @app.route("/order/<int:item_id>/<int:order_id>/addToOrder", methods=['GET', 'POST'])
 def add_item(item_id, order_id):
@@ -141,11 +128,11 @@ def edit_item(item_id, order_id):
                            order_id=order_id, current_quant=current_quant)
 
 
-
 @app.route("/review/<int:order_id>/", methods=['GET', 'POST'])
 def review_order(order_id):
     form = reviewOrderForm()
     items, total_cost = get_order_items_and_total_price(order_id)
+    total_items = get_total_items_in_order(order_id)
     if form.validate_on_submit():
         print(form.submit.data, form.edit.data, form.cancel.data)
         if form.submit.data:
@@ -160,35 +147,33 @@ def review_order(order_id):
             remove_order(order_id)
             flash('Your order has been canceled!')
             return redirect(url_for('home'))
-            
-    return render_template('reviewOrder.html', items=items, form=form,
-                           total_cost=total_cost, user=current_user)
-    
-    
-    
-    
-    
-    
 
-    
+    return render_template('reviewOrder.html', items=items, form=form,
+                           total_cost=total_cost, user=current_user,
+                           total_items=total_items)
+
+
 @app.route('/assign', methods=['GET', 'POST'])
 def assign_staff():
     # user must be signed in and a manager
     if current_user.is_authenticated and current_user.user_id == current_user.manager_id:
         form = AssignStaffForm()
+        ordering_customers = get_all_customers_who_have_ordered()
         if form.validate_on_submit():
             print('VALIDATED++++++++++++++++++++++++++++')
-            assign_staff_to_order(form.staff_dropdown.data, form.order_dropdown.data)  
+            assign_staff_to_order(form.staff_dropdown.data,
+                                  form.order_dropdown.data)
             flash('Staff has been assigned to order')
             # add logic gor doing that here
             return redirect(url_for('home'))
         else:
             print('NOT VALIDATED++++++++++++++++')
-            return render_template('assign.html', form=form)
-        
+            return render_template('assign.html', form=form,
+                                   ordering_customers=ordering_customers)
+
     flash('You must be a manager and signed in!')
     return redirect(url_for('login'))
-    
+
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
@@ -198,7 +183,8 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
        # hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = User(username=form.username.data,password=form.password.data, address=form.address.data, phone_number=form.phone.data)
+        user = User(username=form.username.data, password=form.password.data,
+                    address=form.address.data, phone_number=form.phone.data)
         db.session.add(user)
         db.session.commit()
         flash('Your account has been created! You are now able to log in', 'success')

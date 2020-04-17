@@ -49,12 +49,16 @@ def assign_staff_to_order(user_id, order_id):
 def get_order_items():
     # returns list of dictionaries order and the items in that order
     order_items = list(db.session.execute(
-        'SELECT ot.order_id, it.item_id, it.description, it.cost, oct.quantity, ot.order_date FROM order_tb as ot JOIN order_contents_tb as oct on ot.order_id = oct.order_id JOIN item_tb as it ON it.item_id = oct.item_id'))
+        'SELECT ot.order_id, it.item_id, it.description, it.cost, oct.quantity, \
+            ot.order_date FROM order_tb as ot JOIN order_contents_tb as oct on \
+            ot.order_id = oct.order_id JOIN item_tb as it ON \
+            it.item_id = oct.item_id'))
+    
     unique_orders = {}
     for order in order_items:
         
         item_details = [order[1], Item.query.filter_by(
-                item_id=order[1]).first().name, order[2], order[3], order[4]]
+                item_id=order[1]).first().name, order[2], order[3], order[4], order[5]]
         # [item_id, item_name, idescription, quantity, date]
         if order[0] in unique_orders:
            unique_orders[order[0]].append(item_details)
@@ -90,12 +94,23 @@ def get_order_item(order_id):
         return []
 
 
+def get_all_customers_who_have_ordered():
+    '''
+    returns the user_id, firstname and lastname of all customers who have
+    made an order.
+    '''
+    customers = list(db.session.execute(
+        'SELECT user_tb.user_id, user_tb.first_name, user_tb.last_name FROM user_tb where user_tb.user_id IN (SELECT order_tb.customer_id FROM order_tb)'
+    ))
+    return customers
+    
+
+
 def get_order_items_and_total_price(order_id):
     items_ordered = get_order_items()[order_id]
     item_name_quant_cost = []
     grand_total = 0
     for item in items_ordered:
-        print(item, '66666666666666666666666666666666666666666666666666666666666')
         cost = Item.query.get(item[0]).cost
         print(cost, item[4])
         item_name_quant_cost.append([item[0], item[1], item[4],
@@ -104,16 +119,36 @@ def get_order_items_and_total_price(order_id):
     return item_name_quant_cost, grand_total
 
 def get_quantity_item_in_order(order_id, item_id):
-    items_in_order = get_order_item(order_id)
-    return [item[3] for item in items_in_order if item[0] == item_id][0]
+    '''
+    Given an order_id and the item number returns the quantity of that
+    item in that order as an integer.
+    '''
+    q = db.session.execute(f'SELECT order_contents_tb.quantity \
+        FROM order_contents_tb WHERE order_contents_tb.order_id = {order_id} \
+        AND order_contents_tb.item_id = {item_id}')
+    if not q:
+        q = 0
+    else:
+        q = q.first()[0]
+    
+    return q
 
+def get_total_items_in_order(order_id):
+    '''
+    Get total number of different types of items in order
+    '''
+    q = db.session.execute(f' SELECT COUNT(*)  AS "total_items" FROM order_contents_tb \
+        WHERE order_contents_tb.order_id = {order_id}')
+    if not q:
+        q = 0
+    else:
+        q = q.first()[0]
+    print(q, 'total items', type(q))
+    return q
 
 def edit_item_quantity_in_order(order_id, item_id, new_quantity):
     order_contents = OrderContents.query.filter_by(order_id=order_id, item_id=item_id).first()
-    db.session.delete(order_contents)
-    db.session.add(OrderContents(order_id=order_contents.order_id,
-                                 item_id=order_contents.item_id,
-                                 quantity=new_quantity))
+    order_contents.quanity = new_quantity
     db.session.commit()
     
     
