@@ -1,4 +1,31 @@
 {% extends "layout.html" %}
 {% block content %}
-    <h1>About Page</h1>
+<style>
+	body {
+			background-image: url('https://cmkt-image-prd.freetls.fastly.net/0.1.0/ps/4056304/910/607/m2/fpnw/wm1/vxe366bopjmfzyzyimmkqfb7t0gtau1metavpmx8jyplaectvo0sc0y2cwxs7kte-.jpg?1519553652&s=f202e1127b47913a2e44e1c07a37cc6b');
+		}
+		
+	#aboutBlock {
+			background-color: #e0e0eb;
+	}
+	
+	h1 {
+			border-style: dashed;
+			border-color: #e0e0eb;
+			background-image: url('https://previews.123rf.com/images/titco/titco1706/titco170600735/80545384-white-organic-wood-texture-light-wooden-background-old-washed-wood-.jpg');
+			text-align: center;
+	}
+</style>
+{% block about %}
+<h1>About our Establishment</h1>
+<article class = "media-content-section" id="aboutBlock">
+	<p>Established in 2020 by a group of fresh college graduates, we are a restaurant that aims for the highest level of customer satisfaction in the Chicagoland area. We can guarantee you that by eating at our restaurant, you will get to enjoy the freshest fish possible.
+	</p>
+	<br>
+	<p>
+	In addition to providing wonderful service, we are pleased to announce that we are now offering birthday party services! Have a kid who is interested in learning what it's like to make sushi? Looking to throw a party for your friend who just can't put down the chopsticks? Then look no further, we are always willing to work with you depending on the needs of that special someone. Please reach out to a manager with any birthday inquiries.
+	</p>
+</article>
+{% endblock about %}
+
 {% endblock content %}

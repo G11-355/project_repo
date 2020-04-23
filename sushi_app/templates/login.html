@@ -1,6 +1,15 @@
 {% extends "layout.html" %}
 {% block content %}
-    <div class="content-section">
+<style>
+	body {
+		background-image: url("https://images3.alphacoders.com/467/thumb-1920-46709.jpg");
+	}
+	
+	#LoginForm {
+		background-color:  #b3ffb3;
+	}
+</style>
+    <div class="content-section" id="LoginForm">
         <form method="POST" action="">
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
