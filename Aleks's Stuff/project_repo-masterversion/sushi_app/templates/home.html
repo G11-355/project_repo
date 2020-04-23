@@ -12,11 +12,49 @@
 			width: 100px;
 		}
 		
+		h1 {
+			border-style: dashed;
+			border-color: #e0e0eb;
+			background-image: url('https://previews.123rf.com/images/titco/titco1706/titco170600735/80545384-white-organic-wood-texture-light-wooden-background-old-washed-wood-.jpg');
+			text-align: center;
+		}
+		
+		#aboutUsBlock {
+			background-color: #e0e0eb;
+		}
+		
+		#appetizerBlock {
+			background-color: #e0e0eb; 
+		}
+		
+		#soupBlock {
+			background-color: #e0e0eb;
+		}
+		
+		#entreeBlock {
+			background-color: #e0e0eb;
+		}
+		
+		#saladBlock {
+			background-color: #e0e0eb;
+		}
+		
+		#drinkBlock {
+			background-color: #e0e0eb;
+		}
+		
+		#healthContent {
+			background-image: url("https://image.shutterstock.com/image-photo/real-sushi-set-valentines-day-260nw-788489263.jpg");
+		}
+		
+		
+		
 	</style>
 {% block intro %}
 <h1>About us</h1>
-<article class ="media content-section">
-<p>A test-page for the Sushi Bar project by Aleks, Ethan, Duncan, and Laura. We are a group of students who strive to bring a new sushi website experience to our classmates, friends, and anybody with a love for sushi! </p>
+<article class ="media content-section" id="aboutUsBlock">
+<p>A test-page for the Sushi Bar project by Ethan, Aleks, Duncan, and Laura. We are a group of students who strive to bring a new sushi website experience to our classmates, friends, and anybody with a love for sushi! </p>
+<img src="https://cdn.dribbble.com/users/1469680/screenshots/8497242/img_0043.jpg">
 </article>
 {% endblock intro %}
 
@@ -24,7 +62,7 @@
 <h1>Appetizers</h1>
     {% for item in items %}
 	{% if item.type =="app" %}
-	<article class ="media content-section">
+	<article class ="media content-section" id="appetizerBlock">
 				<ul>
 					<h2>{{ item.name }}</h1>
 					<h3>Price: ${{ item.cost }}</h2>
@@ -53,7 +91,7 @@
 	<h1>Soups</h1>
     {% for item in items %}
 	{% if item.type =="sop" %}
-	<article class ="media content-section">
+	<article class ="media content-section" id="soupBlock">
 				<ul>
 					<h2>{{ item.name }}</h1>
 					<h3>Price: ${{ item.cost }}</h2>
@@ -76,7 +114,7 @@
 	<h1>Entrees</h1>
     {% for item in items %}
 	{% if item.type =="ent" %}
-	<article class ="media content-section">
+	<article class ="media content-section" id="entreeBlock">
 				<ul>
 					<h2>{{ item.name }}</h1>
 					<h3>Price: ${{ item.cost }}</h2>
@@ -111,7 +149,7 @@
 	<h1>Salads</h1>
     {% for item in items %}
 	{% if item.type =="sal" %}
-	<article class ="media content-section">
+	<article class ="media content-section" id="saladBlock">
 				<ul>
 					<h2>{{ item.name }}</h1>
 					<h3>Price: ${{ item.cost }}</h2>
@@ -131,7 +169,7 @@
 	<h1>Drinks</h1>
     {% for item in items %}
 	{% if item.type =="drk" %}
-	<article class ="media content-section">
+	<article class ="media content-section" id="drinkBlock">
 				<ul>
 					<h2>{{ item.name }}</h1>
 					<h3>Price: ${{ item.cost }}</h2>
@@ -149,5 +187,14 @@
 	{% endif %}
     {% endfor %}
 {% endblock drinks %}
+
+{% block health %}
+
+<h1>Health Information</h1>
+<article class ="media content-section" id="healthContent">
+<p id='healthBlock'>A note to our customers:
+We strive to use the freshest ingredients possibles. That means that every individual nigiri, soup, and appetizer is made with zero additives and preservatives. If you believe that the food you receive is not up to the standard, let us know and we will do our best to make sure you leave our restaurant satisfied!</p>
+</article>
+{% endblock health %}
 
 {% endblock content %}
