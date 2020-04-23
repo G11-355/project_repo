@@ -3,6 +3,7 @@ from sushi_app.models import *
 from random import choice
 from sushi_app import db
 
+
 def get_order_id():
     '''
     Returns a valid order id that can be used for the current order.
@@ -12,7 +13,6 @@ def get_order_id():
         return sorted(order_ids, key=lambda x: x.order_id)[-1].order_id + 1
     else:
         return 1
-
 
 
 def assign_order_contents(order_contents, customer_id):
@@ -53,15 +53,15 @@ def get_order_items():
             ot.order_date FROM order_tb as ot JOIN order_contents_tb as oct on \
             ot.order_id = oct.order_id JOIN item_tb as it ON \
             it.item_id = oct.item_id'))
-    
+
     unique_orders = {}
     for order in order_items:
-        
+
         item_details = [order[1], Item.query.filter_by(
-                item_id=order[1]).first().name, order[2], order[3], order[4], order[5]]
+            item_id=order[1]).first().name, order[2], order[3], order[4], order[5]]
         # [item_id, item_name, idescription, quantity, date]
         if order[0] in unique_orders:
-           unique_orders[order[0]].append(item_details)
+            unique_orders[order[0]].append(item_details)
             # add the item name and the quantity ordered to list for that order id
         else:
             unique_orders[order[0]] = [item_details]
@@ -85,11 +85,12 @@ def filter_order_by_user(current_user_id, orders_dict):
                 customer_orders[order] = orders_dict[order]
         print(customer_orders)
         return customer_orders
-            
+
+
 def get_order_item(order_id):
     all_item_orders = get_order_items()
     if order_id in all_item_orders:
-         return all_item_orders[order_id]
+        return all_item_orders[order_id]
     else:
         return []
 
@@ -103,7 +104,6 @@ def get_all_customers_who_have_ordered():
         'SELECT user_tb.user_id, user_tb.first_name, user_tb.last_name FROM user_tb where user_tb.user_id IN (SELECT order_tb.customer_id FROM order_tb)'
     ))
     return customers
-    
 
 
 def get_order_items_and_total_price(order_id):
@@ -115,8 +115,9 @@ def get_order_items_and_total_price(order_id):
         print(cost, item[4])
         item_name_quant_cost.append([item[0], item[1], item[4],
                                      cost, item[4] * cost])
-        grand_total += item[4]  * cost
+        grand_total += item[4] * cost
     return item_name_quant_cost, grand_total
+
 
 def get_quantity_item_in_order(order_id, item_id):
     '''
@@ -130,8 +131,9 @@ def get_quantity_item_in_order(order_id, item_id):
         q = 0
     else:
         q = q.first()[0]
-    
+
     return q
+
 
 def get_total_items_in_order(order_id):
     '''
@@ -146,12 +148,15 @@ def get_total_items_in_order(order_id):
     print(q, 'total items', type(q))
     return q
 
+
 def edit_item_quantity_in_order(order_id, item_id, new_quantity):
-    order_contents = OrderContents.query.filter_by(order_id=order_id, item_id=item_id).first()
-    order_contents.quanity = new_quantity
+    OrderContents.query.filter_by(
+        order_id=order_id, item_id=item_id).update({'quantity': new_quantity})
+    #order_contents.quanity = new_quantity
+    #order_contents
     db.session.commit()
-    
-    
+
+
 def get_item_by_type():
     '''
     Returns a dictionary of items where the key is the item type. If the key is
@@ -165,14 +170,16 @@ def get_item_by_type():
             item_dict[item.type].append(item)
         else:
             item_dict[item.type] = [item]
-    item_dict = {TRANS_DICT[t]: item_dict[t] for t in item_dict if t in TRANS_DICT}
+    item_dict = {TRANS_DICT[t]: item_dict[t]
+                 for t in item_dict if t in TRANS_DICT}
 
     return item_dict
+
 
 def remove_item_from_order(order_id, item_id):
     order_contents = OrderContents.query.filter_by(order_id=order_id,
                                                    item_id=item_id).first()
-        
+
     db.session.delete(order_contents)
     db.session.commit()
 
@@ -192,7 +199,6 @@ def get_current_datetime():
     return f'{date.year}-{date.month}-{date.day}'
 
 
-
 def make_new_order(customer_id, staff_id=None):
     '''
     Makes a new order based on the given customer_id. If staff id is left as 
@@ -202,13 +208,14 @@ def make_new_order(customer_id, staff_id=None):
     order_id = get_order_id()
     if staff_id == None:  # if staff id not given assign random staff
         users = User.query.all()
-        staff_id = choice([user for user in users if user.specialty != None]).user_id
-    
+        staff_id = choice(
+            [user for user in users if user.specialty != None]).user_id
+
     order = Order(order_id=order_id, customer_id=customer_id,
                   staff_id=staff_id, order_date=get_current_datetime())
-    
+
     session_add_commit(order)
-    
+
     return order
 
 
@@ -225,7 +232,7 @@ def remove_order(order_id):
         for con in contents:
             db.session.delete(con)
         db.session.commit()
-        
+
         db.session.delete(order)
         db.session.commit()
 
@@ -238,6 +245,7 @@ def get_order_contents(order_id, item_id):
     return OrderContents.query.filter(OrderContents.order_id == order_id, OrderContents.item_id == item_id)
 
     # join on
+
 
 def session_add_commit(thing_to_add):
     db.session.add(thing_to_add)

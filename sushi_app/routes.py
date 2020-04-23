@@ -31,7 +31,7 @@ def list_order_items():
             current_user.user_id, get_order_items())
         
         for order_id in all_orders:  # append the grand total cost to the end of each list in all_orders dict
-            grand_total = sum([item[3] for item in all_orders[order_id]])
+            grand_total = sum([item[3]*item[4] for item in all_orders[order_id]])
             all_orders[order_id].append(grand_total)
         
         return render_template('orderList.html', order_items=all_orders,
