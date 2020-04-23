@@ -29,6 +29,11 @@ def list_order_items():
     if current_user.is_authenticated:
         all_orders = filter_order_by_user(
             current_user.user_id, get_order_items())
+        
+        for order_id in all_orders:  # append the grand total cost to the end of each list in all_orders dict
+            grand_total = sum([item[3] for item in all_orders[order_id]])
+            all_orders[order_id].append(grand_total)
+        
         return render_template('orderList.html', order_items=all_orders,
                                current_user=current_user)  # add template here
     else:
@@ -92,16 +97,14 @@ def place_order(current_order=0):
         flash('Please sign in first!')
         return redirect(url_for('login'))
 
-
-@app.route("/order/<int:item_id>/<int:order_id>/addToOrder", methods=['GET', 'POST'])
-def add_item(item_id, order_id):
     # when access the order page an order id is generated for you
     # and if the order doesnt get places then we delete it from database
+@app.route("/order/<int:item_id>/<int:order_id>/addToOrder", methods=['GET', 'POST'])
+def add_item(item_id, order_id):
     item = Item.query.get(item_id)
     form = addToOrderForm()
     if form.validate_on_submit():
         q = form.quantity.data
-        print(order_id, 'CURRENT ORDER ID')
         add_item_to_order(order_id=order_id, item_id=item_id, quanity=q)
         flash(f'{item.name} added to your order!')
         return redirect(url_for('place_order', current_order=order_id))
