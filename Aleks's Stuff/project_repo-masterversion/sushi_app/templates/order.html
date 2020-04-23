@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block content %}
+<form method="POST" action="">
+  {{ form.hidden_tag() }}
+    {% for category in items %}
+        <h1>{{category}}</h1>
+        <hr>
+        {% for item in items[category] %}
+        <article class="media content-section">
+          <div class="media-body">
+            <div class="article-metadata">
+              <h2>{{ item.name }}</h2>
+            </div>
+            <p class="article-content">Price: {{ item.cost }} $</p>
+            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('add_item', item_id=item.item_id, order_id=order.order_id) }}">Add to Order</a>
+          </div>
+        </article>
+        {% endfor %}
+    {% endfor %}
+    <div class="form-group">
+      {{ form.submit(class="btn btn-outline-info") }}
+  </div>
+  </form>
+{% endblock content %}
