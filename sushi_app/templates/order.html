@@ -1,12 +1,37 @@
 {% extends "layout.html" %}
 {% block content %}
+<style>
+	body {
+		background-image: url('https://image.freepik.com/free-vector/kawaii-sushi-rolls-chopsticks-bamboo-leaves-seamless-pattern-background-cartoon-emoji_74565-821.jpg');
+	}
+	
+	h1 {
+			border-style: dashed;
+			border-color: #e0e0eb;
+			background-image: url('https://previews.123rf.com/images/titco/titco1706/titco170600735/80545384-white-organic-wood-texture-light-wooden-background-old-washed-wood-.jpg');
+			text-align: center;
+	}
+	
+	.btn btn-outline-info {
+		background-color: #99c2ff;
+	}
+	
+	#contentBody {
+			background-color:  #b3ffb3;
+	}
+	
+	#submit {
+			background-color: #f2f2f2;
+	}
+	
+</style>
 <form method="POST" action="">
   {{ form.hidden_tag() }}
     {% for category in items %}
         <h1>{{category}}</h1>
         <hr>
         {% for item in items[category] %}
-        <article class="media content-section">
+        <article class="media content-section" id="contentBody">
           <div class="media-body">
             <div class="article-metadata">
               <h2>{{ item.name }}</h2>
@@ -22,7 +47,7 @@
         </article>
         {% endfor %}
     {% endfor %}
-    <div class="form-group">
+    <div class="form-group" >
       {{ form.submit(class="btn btn-outline-info") }}
   </div>
   </form>
