@@ -9,14 +9,14 @@
 
             <div class="form-group">
                 <h5>Current Quantity in Cart: {{current_quant}}</h5>
-                {{ form.quantity.label(class="form-control-label") }}
+               {{ form.quantity.label(class="form-control-label") }}
                 {% if form.quantity.errors %}
                     {{ form.quantity(class="form-control form-control-lg is-invalid") }}
-                    <div class="invalid-feedback">
-                        {% for error in form.title.errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
+                    <ul class="errors"> 
+					{% for error in form.quantity.errors %}
+						<li>{{ error }}</li>
+					{% endfor %}
+					</ul>
                 {% else %}
                     {{ form.quantity(class="form-control form-control-lg") }}
                 {% endif %}
