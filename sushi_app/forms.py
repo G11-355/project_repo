@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, FieldList, FormField, IntegerField, TextAreaField, SelectField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, NumberRange
 from sushi_app.models import Item, User, Order
 from sushi_app import db
 
@@ -69,12 +69,11 @@ class OrderTest(FlaskForm):
 
 
 class addToOrderForm(FlaskForm):
-    quantity = IntegerField(label='Quantity', default=1)
+    quantity = IntegerField(label='Quantity', default=1, validators=[NumberRange(min=0, max=None, message=(u'Quantity must be a positive number'))])
     submit = SubmitField(label='Add Item')
 
-
 class editToOrderForm(FlaskForm):
-    quantity = IntegerField(label='Enter New Quantity', default=0)
+    quantity = IntegerField(label='Enter New Quantity', default=0,  validators=[NumberRange(min=0, max=None, message=(u'Quantity must be a positive number'))])
     submit = SubmitField(label='Edit Quantity')
 
 class reviewOrderForm(FlaskForm):
