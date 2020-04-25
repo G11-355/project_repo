@@ -8,16 +8,16 @@
             <legend class="border-bottom mb-4">{{ legend }}</legend>
 
             <div class="form-group">
-                {{ form.quantity.label(class="form-control-label") }}
+                {{{ form.quantity.label(class="form-control-label") }}
                 {% if form.quantity.errors %}
-                    {{ form.quantity(class="form-control form-control-lg is-invalid") }}
-                    <div class="invalid-feedback">
-                        {% for error in form.title.errors %}
-                            <span>{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form.quantity(class="form-control form-control-lg") }}
+					{{ form.quantity(class="form-control form-control-lg is-invalid") }}
+                    <ul class="errors"> 
+					{% for error in form.quantity.errors %}
+						<li>{{ error }}</li>
+					{% endfor %}
+					</ul>
+				{% else %}
+					{{ form.quantity(class="form-control form-control-lg") }}
                 {% endif %}
         </fieldset>
         <div class="form-group">
