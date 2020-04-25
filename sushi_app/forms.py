@@ -69,11 +69,11 @@ class OrderTest(FlaskForm):
 
 
 class addToOrderForm(FlaskForm):
-    quantity = IntegerField(label='Quantity', default=1, validators=[NumberRange(min=0, max=None, message=(u'Quantity must be a positive number'))])
+    quantity = IntegerField(label='Quantity', default=1, validators=[NumberRange(min=0, max=None, message=(u'Quantity must be a positive number.'))])
     submit = SubmitField(label='Add Item')
 
 class editToOrderForm(FlaskForm):
-    quantity = IntegerField(label='Enter New Quantity', default=0,  validators=[NumberRange(min=0, max=None, message=(u'Quantity must be a positive number'))])
+    quantity = IntegerField(label='Enter New Quantity', default=0,  validators=[NumberRange(min=0, max=None, message=(u'Quantity must be a positive number.'))])
     submit = SubmitField(label='Edit Quantity')
 
 class reviewOrderForm(FlaskForm):
