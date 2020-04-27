@@ -8,7 +8,7 @@
             <legend class="border-bottom mb-4">{{ legend }}</legend>
 
             <div class="form-group">
-                {{{ form.quantity.label(class="form-control-label") }}
+                {{ form.quantity.label(class="form-control-label") }}
                 {% if form.quantity.errors %}
 					{{ form.quantity(class="form-control form-control-lg is-invalid") }}
                     <ul class="errors"> 
