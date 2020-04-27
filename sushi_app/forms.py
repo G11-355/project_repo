@@ -47,9 +47,11 @@ class AssignStaffForm(FlaskForm):
 
     
     order_dropdown = SelectField(label='Select Orders', 
-                                  choices=customers, validators=[DataRequired()], coerce=int)
+                                  choices=customers, validators=[DataRequired()],
+                                  coerce=int)
     staff_dropdown = SelectField(label='Select Staff', 
-                                 choices=staff, validators=[DataRequired()], coerce=int)
+                                 choices=staff, validators=[DataRequired()],
+                                 coerce=int)
     
     submit = SubmitField('Submit Assignment')
     

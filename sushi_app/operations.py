@@ -101,7 +101,9 @@ def get_all_customers_who_have_ordered():
     made an order.
     '''
     customers = list(db.session.execute(
-        'SELECT user_tb.user_id, user_tb.first_name, user_tb.last_name FROM user_tb where user_tb.user_id IN (SELECT order_tb.customer_id FROM order_tb)'
+        'SELECT user_tb.user_id, user_tb.first_name, user_tb.last_name FROM \
+            user_tb where user_tb.user_id IN (SELECT order_tb.customer_id \
+                FROM order_tb)'
     ))
     return customers
 
@@ -226,9 +228,7 @@ def remove_order(order_id):
     '''
     if Order.query.get(order_id):  # if a valid order
         contents = OrderContents.query.filter_by(order_id=order_id)
-        print(contents)
         order = Order.query.get(order_id)
-        print(order)
         for con in contents:
             db.session.delete(con)
         db.session.commit()
